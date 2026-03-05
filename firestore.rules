@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Businesses (replaces restaurants) ───────────────────────────────────
+    match /businesses/{bid} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    // Public: read active services
+    match /businesses/{bid}/services/{sid} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    // Public: read active variants
+    match /businesses/{bid}/services/{sid}/variants/{vid} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    // Reviews: public read unused variants + public create (for AI-generated)
+    // + public mark-used update (customer action), admin full access
+    match /businesses/{bid}/reviews/{rid} {
+      allow read: if true;
+      allow create: if true
+        && request.resource.data.keys().hasAll(['text', 'serviceId', 'used', 'createdAt']);
+      allow update: if true
+        && request.resource.data.diff(resource.data).changedKeys().hasOnly(['used', 'usedAt']);
+      allow delete: if request.auth != null;
+    }
+    // Events: public create (validated), admin read/update/delete
+    match /businesses/{bid}/events/{eid} {
+      allow create: if true
+        && request.resource.data.keys().hasAll(['type', 'createdAt'])
+        && request.resource.data.type in ['scan', 'next', 'shown', 'copy_open', 'confirm_posted', 'negative_feedback'];
+      allow read: if request.auth != null;
+      allow update, delete: if request.auth != null;
+    }
+
+    // ─── Legacy restaurants collection (kept for backward compatibility) ──────
+    match /restaurants/{rid} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    match /restaurants/{rid}/services/{sid} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    match /restaurants/{rid}/services/{sid}/variants/{vid} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    match /restaurants/{rid}/events/{eid} {
+      allow create: if true
+        && request.resource.data.keys().hasAll(['type', 'createdAt'])
+        && request.resource.data.type in ['scan', 'next', 'shown', 'copy_open', 'confirm_posted'];
+      allow read: if request.auth != null;
+      allow update, delete: if request.auth != null;
+    }
+  }
+}
