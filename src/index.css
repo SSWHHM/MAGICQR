@@ -31,6 +31,7 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
   }
 
   body {
@@ -631,4 +632,48 @@
 #google-places-autocomplete::part(clear-button) {
   color: var(--color-text-muted) !important;
   right: 10px;
+}
+
+/* ─── Scrolling Marquee ──────── */
+.marquee-container {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  white-space: nowrap;
+  mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+}
+
+.marquee-content {
+  display: inline-flex;
+  animation: scroll 30s linear infinite;
+  gap: 3rem;
+  padding: 1rem 0;
+}
+
+.marquee-content:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ─── Dash Line ──────── */
+.dashed-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-image: linear-gradient(to right, rgba(108, 92, 231, 0.2) 50%, transparent 50%);
+  background-size: 20px 2px;
+  z-index: -1;
+}
+
+@media (max-width: 768px) {
+  .dashed-line {
+    display: none;
+  }
 }
