@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getBusiness, getEvents, getAllServicesAdmin } from '../../lib/firestore';
+import { getBusiness, getEvents, getAllServicesAdmin } from '../../lib/db';
 
 export default function Analytics() {
     const { id } = useParams();
@@ -40,8 +40,8 @@ export default function Analytics() {
     // Top services
     const serviceStats = {};
     events.forEach((e) => {
-        if (e.serviceId && e.type === 'next') {
-            serviceStats[e.serviceId] = (serviceStats[e.serviceId] || 0) + 1;
+        if (e.service_id && e.type === 'next') {
+            serviceStats[e.service_id] = (serviceStats[e.service_id] || 0) + 1;
         }
     });
     const topServices = Object.entries(serviceStats)
@@ -68,7 +68,7 @@ export default function Analytics() {
                     to={`/admin/restaurant/${id}`}
                     style={{ color: 'var(--color-primary-light)', textDecoration: 'none', fontSize: '0.85rem' }}
                 >
-                    ← Back to {business?.displayName}
+                    ← Back to {business?.name}
                 </Link>
             </div>
 

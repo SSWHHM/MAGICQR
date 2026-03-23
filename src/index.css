@@ -72,8 +72,6 @@
 }
 
 /* ─── Buttons ──────── */
-/* touch-action: manipulation eliminates the 300ms tap delay on mobile */
-/* user-select: none prevents text-selection on rapid taps */
 .btn-primary,
 .btn-secondary,
 .btn-success,
@@ -108,7 +106,6 @@
   box-shadow: 0 6px 30px rgba(108, 92, 231, 0.5);
 }
 
-/* Instant pressed feeling on mobile — scale-down + slight darken */
 .btn-primary:active {
   transform: scale(0.97) translateY(1px);
   box-shadow: 0 2px 8px rgba(108, 92, 231, 0.3);
@@ -133,7 +130,6 @@
   cursor: pointer;
   transition: all 0.3s ease;
   min-height: 44px;
-  /* iOS/Android minimum tap target */
   width: 100%;
 }
 
@@ -164,7 +160,6 @@
   gap: 0.5rem;
   min-height: 56px;
   width: 100%;
-  /* Prevent accidental double-fire while async action is in flight */
   position: relative;
 }
 
@@ -184,7 +179,6 @@
   cursor: not-allowed;
   transform: none;
   pointer-events: none;
-  /* hard-block double-tap while disabled */
 }
 
 .btn-danger {
@@ -198,7 +192,6 @@
   cursor: pointer;
   transition: all 0.2s ease;
   min-height: 44px;
-  /* iOS/Android minimum tap target */
 }
 
 .btn-danger:hover {
@@ -237,7 +230,6 @@
   position: relative;
   cursor: pointer;
   transition: all 0.3s ease;
-  /* Expand click/tap area to full row — no tiny hotspot */
   touch-action: manipulation;
 }
 
@@ -250,7 +242,6 @@
 
 .radio-card .card-content {
   padding: 1.25rem;
-  /* min-height ensures even a 1-line option has a 44px+ tap target */
   min-height: 44px;
   border-radius: 1rem;
   border: 2px solid rgba(255, 255, 255, 0.06);
@@ -258,7 +249,6 @@
   transition: all 0.15s ease;
 }
 
-/* Instant tap-down visual feedback on mobile */
 .radio-card:active .card-content {
   background: rgba(108, 92, 231, 0.08);
   border-color: rgba(108, 92, 231, 0.2);
@@ -306,7 +296,6 @@
   font-size: 2.5rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  /* 44px minimum tap target — the star glyph alone is too small on mobile */
   padding: 0.5rem;
   min-width: 44px;
   min-height: 44px;
@@ -607,4 +596,39 @@
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
+}
+
+/* ─── Google Places Autocomplete ──────── */
+#google-places-autocomplete {
+  width: 100%;
+  color-scheme: dark;
+}
+
+#google-places-autocomplete::part(input) {
+  background: var(--color-surface-lighter) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 0.75rem;
+  padding: 12px 16px 12px 42px;
+  color: #FFFFFF !important;
+  font-size: 1rem;
+  width: 100%;
+  transition: all 0.2s ease;
+  outline: none;
+  font-family: inherit;
+  margin: 0;
+}
+
+#google-places-autocomplete::part(input):focus {
+  border-color: var(--color-primary-light) !important;
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+}
+
+#google-places-autocomplete::part(icon) {
+  color: var(--color-primary-light) !important;
+  left: 14px;
+}
+
+#google-places-autocomplete::part(clear-button) {
+  color: var(--color-text-muted) !important;
+  right: 10px;
 }

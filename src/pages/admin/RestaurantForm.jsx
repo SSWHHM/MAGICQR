@@ -1,101 +1,51 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams, useOutletContext } from 'react-router-dom';
-import { createBusiness, getBusiness, updateBusiness } from '../../lib/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '../../firebase';
-
-// Removed — replaced with inline robust init below
+import { getBusiness, updateBusiness } from '../../lib/db';
+import { supabase } from '../../lib/supabase';
 
 export default function RestaurantForm() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { refreshBusinesses } = useOutletContext();
-    const isEditing = !!id;
 
     const [form, setForm] = useState({
-        displayName: '',
+        name: '',
         slug: '',
+        category: '',
+        city: '',
+        neighborhood: '',
+        google_place_id: '',
     });
-    // placeId comes from Autocomplete, not typed manually
-    const [placeId, setPlaceId] = useState('');
-    const autocompleteInputRef = useRef(null);
     const [logoFile, setLogoFile] = useState(null);
     const [logoPreview, setLogoPreview] = useState(null);
     const [saving, setSaving] = useState(false);
-    const [loading, setLoading] = useState(isEditing);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        if (isEditing) {
-            loadBusiness();
-        }
+        loadBusiness();
     }, [id]);
 
     async function loadBusiness() {
-        const data = await getBusiness(id);
-        if (data) {
-            setForm({
-                displayName: data.displayName || '',
-                slug: data.slug || '',
-            });
-            if (data.placeId) {
-                setPlaceId(data.placeId);
-                // Pre-fill the autocomplete input with the existing name in edit mode
-                if (autocompleteInputRef.current) {
-                    autocompleteInputRef.current.value = data.displayName || '';
-                }
+        try {
+            const data = await getBusiness(id);
+            if (data) {
+                setForm({
+                    name: data.name || '',
+                    slug: data.slug || '',
+                    category: data.category || '',
+                    city: data.city || '',
+                    neighborhood: data.neighborhood || '',
+                    google_place_id: data.google_place_id || '',
+                });
+                if (data.logo_url) setLogoPreview(data.logo_url);
             }
-            if (data.logoUrl) setLogoPreview(data.logoUrl);
+        } catch (err) {
+            setError('Failed to load business details');
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     }
-
-    // Init Google Places Autocomplete — robust pattern that handles script timing
-    useEffect(() => {
-        const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-        if (!apiKey) return;
-
-        const initAutocomplete = () => {
-            if (!autocompleteInputRef.current) return;
-            const autocomplete = new window.google.maps.places.Autocomplete(
-                autocompleteInputRef.current,
-                { types: ['establishment'] }
-            );
-            autocomplete.addListener('place_changed', () => {
-                const place = autocomplete.getPlace();
-                if (!place.place_id) return;
-                const slug = place.name
-                    .toLowerCase()
-                    .replace(/[^a-z0-9]+/g, '-')
-                    .replace(/(^-|-$)/g, '');
-                setForm((prev) => ({
-                    ...prev,
-                    displayName: prev.displayName || place.name,
-                    slug: prev.slug || slug,
-                }));
-                setPlaceId(place.place_id);
-            });
-        };
-
-        if (window.google?.maps?.places) {
-            // Script already fully loaded
-            initAutocomplete();
-        } else {
-            const existingScript = document.getElementById('google-maps-script');
-            if (existingScript) {
-                existingScript.addEventListener('load', initAutocomplete);
-                return () => existingScript.removeEventListener('load', initAutocomplete);
-            }
-            const script = document.createElement('script');
-            script.id = 'google-maps-script';
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
-            script.async = true;
-            script.defer = true;
-            script.addEventListener('load', initAutocomplete);
-            document.head.appendChild(script);
-            return () => script.removeEventListener('load', initAutocomplete);
-        }
-    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -119,39 +69,37 @@ export default function RestaurantForm() {
         e.preventDefault();
         setError('');
 
-        if (!form.displayName || !form.slug) {
+        if (!form.name || !form.slug) {
             setError('Business Name and URL Slug are required');
-            return;
-        }
-        if (!placeId) {
-            setError('Please search and select your business from Google Maps above');
             return;
         }
 
         setSaving(true);
         try {
-            let logoUrl = logoPreview;
+            let logo_url = logoPreview;
 
-            // Upload logo if new file selected
             if (logoFile) {
-                const storageRef = ref(storage, `logos/${form.slug}-${Date.now()}`);
-                await uploadBytes(storageRef, logoFile);
-                logoUrl = await getDownloadURL(storageRef);
+                const fileExt = logoFile.name.split('.').pop();
+                const fileName = `logos/${form.slug}-${Date.now()}.${fileExt}`;
+                const { error: uploadError } = await supabase.storage
+                    .from('logos')
+                    .upload(fileName, logoFile, { upsert: true });
+                if (uploadError) throw uploadError;
+                const { data: { publicUrl } } = supabase.storage.from('logos').getPublicUrl(fileName);
+                logo_url = publicUrl;
             }
 
             const data = {
-                displayName: form.displayName,
+                name: form.name,
                 slug: form.slug,
-                placeId,
-                ...(logoUrl && { logoUrl }),
+                category: form.category || null,
+                city: form.city || null,
+                neighborhood: form.neighborhood || null,
+                google_place_id: form.google_place_id || null,
+                ...(logo_url && { logo_url }),
             };
 
-            if (isEditing) {
-                await updateBusiness(id, data);
-            } else {
-                await createBusiness(data);
-            }
-
+            await updateBusiness(id, data);
             await refreshBusinesses();
             navigate('/admin');
         } catch (err) {
@@ -159,6 +107,8 @@ export default function RestaurantForm() {
         }
         setSaving(false);
     };
+
+    const categories = ['restaurant', 'cafe', 'salon', 'clinic', 'retail', 'spa', 'hotel', 'gym', 'other'];
 
     if (loading) {
         return (
@@ -173,121 +123,85 @@ export default function RestaurantForm() {
             <h1 style={{
                 fontSize: '1.5rem',
                 fontWeight: '700',
-                marginBottom: '2rem',
                 background: 'linear-gradient(135deg, var(--color-text), var(--color-primary-light))',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
+                marginBottom: '2rem'
             }}>
-                {isEditing ? 'Edit Business' : 'New Business'}
+                Edit Business
             </h1>
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                {/* Logo Upload */}
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                
+                {/* LOGO UPLOAD */}
                 <div>
-                    <label style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.5rem' }}>
-                        Logo
+                    <label style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.75rem' }}>
+                        Business Logo
                     </label>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
                         {logoPreview ? (
-                            <img
-                                src={logoPreview}
-                                alt="Logo"
-                                style={{ width: '64px', height: '64px', borderRadius: '1rem', objectFit: 'cover', border: '2px solid rgba(255,255,255,0.1)' }}
-                            />
+                            <img src={logoPreview} alt="Logo" style={{ width: '80px', height: '80px', borderRadius: '1.25rem', objectFit: 'cover', border: '2px solid rgba(255,255,255,0.1)' }} />
                         ) : (
-                            <div style={{
-                                width: '64px', height: '64px', borderRadius: '1rem',
-                                background: 'rgba(255,255,255,0.06)', display: 'flex',
-                                alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem',
-                                border: '2px dashed rgba(255,255,255,0.1)',
-                            }}>
+                            <div style={{ width: '80px', height: '80px', borderRadius: '1.25rem', background: 'rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', border: '2px dashed rgba(255,255,255,0.1)' }}>
                                 📷
                             </div>
                         )}
                         <label style={{ cursor: 'pointer' }}>
-                            <span className="btn-secondary" style={{ display: 'inline-block', width: 'auto', padding: '0.5rem 1rem', fontSize: '0.85rem' }}>
-                                Choose File
+                            <span className="btn-secondary" style={{ display: 'inline-block', width: 'auto', padding: '0.6rem 1.25rem', fontSize: '0.85rem' }}>
+                                Change Logo
                             </span>
                             <input type="file" accept="image/*" onChange={handleLogoChange} style={{ display: 'none' }} />
                         </label>
                     </div>
                 </div>
 
-                {/* Display Name */}
-                <div>
-                    <label style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.375rem' }}>
-                        Business Name *
-                    </label>
-                    <input
-                        className="input"
-                        name="displayName"
-                        value={form.displayName}
-                        onChange={handleChange}
-                        placeholder="My Amazing Service"
-                        required
-                    />
-                </div>
+                {/* BASIC INFO */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    <div>
+                        <label style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.5rem' }}>Business Name *</label>
+                        <input className="input" name="name" value={form.name} onChange={handleChange} required />
+                    </div>
 
-                {/* Slug */}
-                <div>
-                    <label style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.375rem' }}>
-                        URL Slug * <span style={{ fontSize: '0.75rem' }}>(used in QR link: /r/{form.slug || 'my-business'})</span>
-                    </label>
-                    <input
-                        className="input"
-                        name="slug"
-                        value={form.slug}
-                        onChange={handleSlugChange}
-                        placeholder="my-business"
-                        required
-                    />
-                </div>
+                    <div>
+                        <label style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.5rem' }}>URL Slug *</label>
+                        <input className="input" name="slug" value={form.slug} onChange={handleSlugChange} required />
+                    </div>
 
-                {/* Google Maps Autocomplete */}
-                <div>
-                    <label style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.375rem' }}>
-                        Search Business on Google Maps *
-                    </label>
-                    <input
-                        ref={autocompleteInputRef}
-                        className="input"
-                        type="text"
-                        placeholder="Type your business name to search Google Maps..."
-                        defaultValue={isEditing ? form.displayName : ''}
-                    />
-                    {placeId ? (
-                        <p style={{ fontSize: '0.75rem', color: '#4ade80', marginTop: '0.375rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                            ✅ Place ID captured: <code style={{ opacity: 0.7 }}>{placeId}</code>
-                        </p>
-                    ) : (
-                        <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: '0.375rem' }}>
-                            {import.meta.env.VITE_GOOGLE_MAPS_API_KEY
-                                ? 'Select your business from the dropdown to capture the Place ID automatically.'
-                                : '⚠️ VITE_GOOGLE_MAPS_API_KEY not set — add it to .env to enable autocomplete.'}
-                        </p>
-                    )}
+                    <div>
+                        <label style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.5rem' }}>Category</label>
+                        <select className="input" name="category" value={form.category} onChange={handleChange}>
+                            <option value="">Select category...</option>
+                            {categories.map((c) => (
+                                <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div>
+                            <label style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.5rem' }}>City</label>
+                            <input className="input" name="city" value={form.city} onChange={handleChange} />
+                        </div>
+                        <div>
+                            <label style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.5rem' }}>Neighborhood</label>
+                            <input className="input" name="neighborhood" value={form.neighborhood} onChange={handleChange} />
+                        </div>
+                    </div>
                 </div>
 
                 {error && (
-                    <div style={{
-                        padding: '0.75rem 1rem',
-                        borderRadius: '0.75rem',
-                        background: 'rgba(225, 112, 85, 0.1)',
-                        border: '1px solid rgba(225, 112, 85, 0.2)',
-                        color: 'var(--color-error)',
-                        fontSize: '0.85rem',
-                    }}>
+                    <div style={{ padding: '0.75rem 1rem', borderRadius: '0.75rem', background: 'rgba(225, 112, 85, 0.1)', border: '1px solid rgba(225, 112, 85, 0.2)', color: 'var(--color-error)', fontSize: '0.85rem' }}>
                         {error}
                     </div>
                 )}
 
-                <button className="btn-primary" type="submit" disabled={saving}>
+                <button className="btn-primary" type="submit" disabled={saving} style={{ marginTop: '1rem' }}>
                     {saving ? (
-                        <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <div className="spinner spinner-sm" /> Saving...
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}>
+                            <div className="spinner spinner-sm" /> Updating...
                         </span>
-                    ) : isEditing ? 'Update Business' : 'Create Business'}
+                    ) : 'Update Business Details →'}
                 </button>
             </form>
         </div>

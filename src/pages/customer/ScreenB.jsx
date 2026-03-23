@@ -6,7 +6,7 @@ import {
     markVariantUsed,
     deprioritizeVariant,
     logEvent,
-} from '../../lib/firestore';
+} from '../../lib/db';
 import { copyToClipboard, openGoogleReview, getSessionId } from '../../lib/utils';
 
 export default function ScreenB() {
@@ -100,7 +100,7 @@ export default function ScreenB() {
         });
 
         setTimeout(() => {
-            openGoogleReview(business.placeId);
+            openGoogleReview(business.google_place_id);
             setTimeout(() => setShowConfirmModal(true), 1000);
         }, 500);
 
@@ -122,7 +122,7 @@ export default function ScreenB() {
             });
 
             setTimeout(() => {
-                openGoogleReview(business.placeId);
+                openGoogleReview(business.google_place_id);
                 setTimeout(() => setShowConfirmModal(true), 1000);
             }, 500);
         } else {

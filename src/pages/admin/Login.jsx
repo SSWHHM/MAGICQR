@@ -18,7 +18,7 @@ export default function Login() {
             await login(email, password);
             navigate('/admin');
         } catch (err) {
-            setError(err.code === 'auth/invalid-credential' ? 'Invalid email or password' : err.message);
+            setError(err.message?.includes('Invalid') ? 'Invalid email or password' : (err.message || 'Sign in failed'));
         }
         setLoading(false);
     };

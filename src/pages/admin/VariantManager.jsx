@@ -7,7 +7,7 @@ import {
     createVariantsBatch,
     updateVariant,
     deleteVariant,
-} from '../../lib/firestore';
+} from '../../lib/db';
 import { generateVariants } from '../../lib/gemini';
 
 export default function VariantManager() {
@@ -124,7 +124,7 @@ export default function VariantManager() {
                     to={`/admin/restaurant/${businessId}`}
                     style={{ color: 'var(--color-primary-light)', textDecoration: 'none', fontSize: '0.85rem' }}
                 >
-                    ← Back to {business?.displayName}
+                    ← Back to {business?.name}
                 </Link>
             </div>
 

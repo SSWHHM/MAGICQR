@@ -1,25 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-    collection,
-    query,
-    where,
-    limit,
-    getDocs,
-    addDoc,
-    updateDoc,
-    doc,
-    onSnapshot,
-    serverTimestamp,
-} from 'firebase/firestore';
-import { db, isConfigured } from '../../firebase';
-import { getBusinessBySlug, logEvent } from '../../lib/firestore';
+import { getBusinessBySlug, logEvent, getRandomVariants, markVariantsServed, submitFeedback, getServices } from '../../lib/db';
+import { generateReviewVariants } from '../../lib/gemini';
 import { getSessionId } from '../../lib/utils';
-import { MOCK_SERVICES, MOCK_GENERATED_VARIANTS } from '../../lib/mockData';
-
-// ─── Constants ────────────────────────────────────────────────────────────────
-const GEMINI_API_URL =
-    'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function ScreenA() {
@@ -80,39 +63,10 @@ export default function ScreenA() {
         load();
     }, [slug]);
 
-    // ─── Subscribe to services in real-time once business is loaded ───────────
+    // ─── Subscribe to services once business is loaded ───────────────────────
     useEffect(() => {
         if (!business) return;
-
-        if (!isConfigured) {
-            // Mock mode: use in-memory mock services
-            const bizServices = MOCK_SERVICES[business.id] ?? [];
-            setServices(bizServices.filter((s) => s.active !== false));
-            return;
-        }
-
-        const q = query(
-            collection(db, 'businesses', business.id, 'services'),
-            where('active', '!=', false)
-        );
-        const unsub = onSnapshot(
-            q,
-            (snap) => {
-                setServices(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
-            },
-            async (err) => {
-                // Firestore rules may not cover 'businesses' yet — fall back to helper
-                console.warn('[ScreenA] onSnapshot services failed, falling back:', err.message);
-                try {
-                    const { getServices } = await import('../../lib/firestore');
-                    const svc = await getServices(business.id);
-                    setServices(svc);
-                } catch (e2) {
-                    console.error('[ScreenA] getServices fallback also failed:', e2);
-                }
-            }
-        );
-        return unsub;
+        getServices(business.id).then(setServices);
     }, [business]);
 
     // ─── Handlers ─────────────────────────────────────────────────────────────
@@ -139,109 +93,27 @@ export default function ScreenA() {
         await loadReviewVariants(service);
     };
 
-    /** Step 5: Load / generate review variants with deduplication */
+    /** Step 5: Load review variants (Supabase DB first, Gemini fallback) */
     const loadReviewVariants = async (service) => {
         setIsGenerating(true);
-        const serviceId = service?.id ?? 'general';
-        const businessName = business.displayName;
-
-        if (!isConfigured) {
-            // Mock mode: simulate a delay then return mock variants
-            await new Promise((r) => setTimeout(r, 1200));
-            const serviceVariants = MOCK_GENERATED_VARIANTS.slice(0, 3).map((text, i) => ({
-                id: `mock-${serviceId}-${i}`,
-                text,
-                serviceId,
-            }));
-            setReviewVariants(serviceVariants);
-            setIsGenerating(false);
-            return;
-        }
-
         try {
-            // Try fetching unused pre-generated variants first
-            const q = query(
-                collection(db, 'businesses', business.id, 'reviews'),
-                where('used', '==', false),
-                where('serviceId', '==', serviceId),
-                limit(3)
-            );
-            const snap = await getDocs(q);
-
-            if (snap.docs.length >= 3) {
-                setReviewVariants(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+            // Try DB variants first (LRU order)
+            const dbVariants = await getRandomVariants(business.id, service?.id ?? null, 3, []);
+            if (dbVariants.length >= 2) {
+                setReviewVariants(dbVariants.slice(0, 3));
+                await markVariantsServed(business.id, service?.id, dbVariants.map((v) => v.id));
                 setIsGenerating(false);
                 return;
             }
-
-            // Fewer than 3 unused — generate fresh ones via Gemini
-            const prompt = service
-                ? `Generate 3 different genuine 5-star Google reviews for a business called "${businessName}" specifically about their "${service.name}" service. ${service.description ? `Context: ${service.description}.` : ''} Each review must be between 40-70 words. Sound like a real customer. Do not use words like 'outstanding', 'exceptional', or 'top-notch'. Return ONLY a valid JSON array of 3 strings, no extra text.`
-                : `Generate 3 different genuine 5-star Google reviews for a business called "${businessName}". Each review must be between 40-70 words. Sound like a real customer. Do not use words like 'outstanding', 'exceptional', or 'top-notch'. Return ONLY a valid JSON array of 3 strings, no extra text.`;
-
-            const response = await fetch(
-                `${GEMINI_API_URL}?key=${import.meta.env.VITE_GEMINI_API_KEY}`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: {
-                            temperature: 1.1,
-                            maxOutputTokens: 4096,
-                            responseMimeType: 'application/json',
-                        },
-                    }),
-                }
-            );
-
-            if (!response.ok) throw new Error(`Gemini API error: ${response.status}`);
-
-            const data = await response.json();
-            const raw = data.candidates?.[0]?.content?.parts?.[0]?.text ?? '[]';
-            let parsed;
-            try {
-                parsed = JSON.parse(raw);
-            } catch {
-                const match = raw.match(/\[[\s\S]*\]/);
-                parsed = match ? JSON.parse(match[0]) : [];
-            }
-            if (!Array.isArray(parsed) || parsed.length === 0) throw new Error('Empty response');
-
-            // Save to Firestore (deduplication pool) and surface to UI
-            const saved = await Promise.all(
-                parsed.slice(0, 3).map(async (text) => {
-                    const ref = await addDoc(
-                        collection(db, 'businesses', business.id, 'reviews'),
-                        {
-                            text,
-                            serviceId,
-                            serviceName: service?.name ?? 'General',
-                            used: false,
-                            usedAt: null,
-                            createdAt: serverTimestamp(),
-                        }
-                    );
-                    return { id: ref.id, text, serviceId };
-                })
-            );
-            setReviewVariants(saved);
+            // Not enough DB variants — generate live with Gemini (SEO keywords auto-injected)
+            const generated = await generateReviewVariants(business, service, starRating, []);
+            setReviewVariants(generated.map((g, i) => ({ id: `gen-${i}`, text: g.text })));
         } catch (err) {
             console.error('Error loading review variants:', err);
-            // Graceful fallback — never leave the user stuck
             setReviewVariants([
-                {
-                    id: 'f1',
-                    text: `Really happy with the ${service?.name ?? 'service'} here. Would definitely recommend.`,
-                },
-                {
-                    id: 'f2',
-                    text: `Great experience overall. The ${service?.name ?? 'team'} was professional and efficient.`,
-                },
-                {
-                    id: 'f3',
-                    text: `Visited recently and was genuinely impressed. Will be coming back for sure.`,
-                },
+                { id: 'f1', text: `Really happy with the ${service?.name ?? 'service'} here. Would definitely recommend.` },
+                { id: 'f2', text: `Great experience overall. The ${service?.name ?? 'team'} was professional and efficient.` },
+                { id: 'f3', text: `Visited recently and was genuinely impressed. Will be coming back for sure.` },
             ]);
         }
         setIsGenerating(false);
@@ -282,18 +154,24 @@ export default function ScreenA() {
         });
 
         setTimeout(() => {
-            window.location.href = `https://search.google.com/local/writereview?placeid=${business.placeId}`;
+            window.location.href = `https://search.google.com/local/writereview?placeid=${business.google_place_id}`;
         }, 600);
     };
 
-    // Submit negative feedback text
+    // Submit negative feedback to feedback_inbox table
     const handleFeedbackSubmit = async () => {
-        const sessionId = getSessionId();
-        await logEvent(business.id, 'negative_feedback', {
-            anonSessionId: sessionId,
-            starRating,
-            message: negativeFeedback.trim(),
-        });
+        try {
+            await submitFeedback(
+                business.id,
+                selectedService?.id ?? null,
+                starRating,
+                negativeFeedback.trim()
+            );
+            const sessionId = getSessionId();
+            await logEvent(business.id, 'negative_feedback', { anonSessionId: sessionId, rating: starRating });
+        } catch (err) {
+            console.warn('[ScreenA] submitFeedback failed:', err.message);
+        }
         setFeedbackSent(true);
     };
 
@@ -326,32 +204,15 @@ export default function ScreenA() {
     // ─── Business header (shared across screens) ──────────────────────────────
     const BusinessHeader = () => (
         <div style={{ textAlign: 'center', marginBottom: '2rem', paddingTop: '1rem' }}>
-            {business.logoUrl && (
+            {business.logo_url && (
                 <img
-                    src={business.logoUrl}
-                    alt={business.displayName}
-                    style={{
-                        width: '72px',
-                        height: '72px',
-                        borderRadius: '1.25rem',
-                        objectFit: 'cover',
-                        margin: '0 auto 1rem',
-                        border: '2px solid rgba(255,255,255,0.1)',
-                        display: 'block',
-                    }}
+                    src={business.logo_url}
+                    alt={business.name}
+                    style={{ width: '72px', height: '72px', borderRadius: '1.25rem', objectFit: 'cover', margin: '0 auto 1rem', border: '2px solid rgba(255,255,255,0.1)', display: 'block' }}
                 />
             )}
-            <h1
-                style={{
-                    fontSize: '1.6rem',
-                    fontWeight: '700',
-                    background: 'linear-gradient(135deg, var(--color-text), var(--color-primary-light))',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                }}
-            >
-                {business.displayName}
+            <h1 style={{ fontSize: '1.6rem', fontWeight: '700', background: 'linear-gradient(135deg, var(--color-text), var(--color-primary-light))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                {business.name}
             </h1>
         </div>
     );

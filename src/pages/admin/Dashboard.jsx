@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
-import { getAllBusinesses, getEvents } from '../../lib/firestore';
+import { getEvents } from '../../lib/db';
 
 export default function Dashboard() {
     const { businesses } = useOutletContext();
@@ -122,10 +122,10 @@ export default function Dashboard() {
                                         transition: 'all 0.2s ease',
                                         cursor: 'pointer',
                                     }}>
-                                        {r.logoUrl ? (
+                                        {r.logo_url ? (
                                             <img
-                                                src={r.logoUrl}
-                                                alt={r.displayName}
+                                                src={r.logo_url}
+                                                alt={r.name}
                                                 style={{ width: '48px', height: '48px', borderRadius: '0.75rem', objectFit: 'cover' }}
                                             />
                                         ) : (
@@ -144,10 +144,10 @@ export default function Dashboard() {
                                         )}
                                         <div>
                                             <h3 style={{ fontSize: '1rem', fontWeight: '600', color: 'var(--color-text)' }}>
-                                                {r.displayName}
+                                                {r.name}
                                             </h3>
                                             <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
-                                                /{r.slug} • {r.placeId ? '✅ Place ID set' : '⚠️ No Place ID'}
+                                                /{r.slug} • {r.google_place_id ? '✅ Place ID set' : '⚠️ No Place ID'}
                                             </p>
                                         </div>
                                         <div style={{ marginLeft: 'auto', color: 'var(--color-text-muted)' }}>→</div>

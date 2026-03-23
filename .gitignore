@@ -25,3 +25,13 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Supabase
+supabase/.temp
+*.sql
+*.md
+!README.md
+!production-deploy.md
+!walkthrough.md
+!implementation_plan.md
+!task.md
