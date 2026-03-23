@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MAGIC QR | India's #1 QR Tool</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary-fixed": "#270048",
+              "on-error": "#490013",
+              "inverse-surface": "#fcf8f8",
+              "inverse-on-surface": "#565554",
+              "on-secondary-container": "#fff5f6",
+              "on-primary-fixed": "#000000",
+              "secondary-dim": "#e10080",
+              "primary-container": "#c185ff",
+              "secondary": "#ff68a7",
+              "surface-dim": "#0e0e0e",
+              "on-secondary-fixed-variant": "#9f0059",
+              "tertiary-dim": "#bf83f8",
+              "on-tertiary": "#47007b",
+              "surface-container-highest": "#262626",
+              "on-secondary": "#460024",
+              "tertiary-fixed-dim": "#c588fe",
+              "primary-dim": "#9c42f4",
+              "outline": "#777575",
+              "on-error-container": "#ffb2b9",
+              "outline-variant": "#494847",
+              "on-surface": "#ffffff",
+              "tertiary-container": "#c285fb",
+              "on-background": "#ffffff",
+              "surface-variant": "#262626",
+              "error-container": "#a70138",
+              "error": "#ff6e84",
+              "tertiary": "#cc97ff",
+              "surface-container-high": "#201f1f",
+              "surface-tint": "#ca98ff",
+              "surface-bright": "#2c2c2c",
+              "on-primary": "#46007d",
+              "surface-container": "#1a1919",
+              "surface-container-lowest": "#000000",
+              "background": "#0e0e0e",
+              "tertiary-fixed": "#ce9aff",
+              "secondary-fixed-dim": "#ffacc8",
+              "secondary-fixed": "#ffc1d4",
+              "on-primary-fixed-variant": "#420078",
+              "on-tertiary-container": "#360061",
+              "on-surface-variant": "#adaaaa",
+              "surface": "#0e0e0e",
+              "primary-fixed-dim": "#b772ff",
+              "inverse-primary": "#8523dd",
+              "on-secondary-fixed": "#6b003a",
+              "error-dim": "#d73357",
+              "surface-container-low": "#131313",
+              "on-tertiary-fixed-variant": "#54118a",
+              "primary": "#ca98ff",
+              "secondary-container": "#b90068",
+              "on-primary-container": "#350062",
+              "primary-fixed": "#c185ff"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        display: inline-block;
+        line-height: 1;
+      }
+      .glass-card {
+        background: rgba(26, 25, 25, 0.4);
+        backdrop-filter: blur(12px);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        border-left: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .signature-gradient-text {
+        background: linear-gradient(to right, #8A2BE2, #FF1493);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .signature-gradient-bg {
+        background: linear-gradient(to right, #8A2BE2, #FF1493);
+      }
+      .ambient-glow {
+        box-shadow: 0 0 40px rgba(138, 43, 226, 0.08);
+      }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body antialiased">
+<!-- Top Navigation Shell -->
+<nav class="fixed top-0 w-full z-50 bg-black/70 backdrop-blur-xl border-b border-white/10 font-headline antialiased tracking-tight shadow-[0_8px_32px_0_rgba(138,43,226,0.1)]">
+<div class="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
+<div class="text-2xl font-black tracking-tighter text-white uppercase">MAGIC QR</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-white font-bold border-b-2 border-violet-500 pb-1" href="#">Features</a>
+<a class="text-white/60 font-medium hover:text-white transition-colors" href="#">How it Works</a>
+<a class="text-white/60 font-medium hover:text-white transition-colors" href="#">Pricing</a>
+<a class="text-white/60 font-medium hover:text-white transition-colors" href="#">FAQ</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-white/70 hover:text-white font-medium transition-all px-4 py-2 hover:bg-white/5 rounded-xl">Login</button>
+<button class="signature-gradient-bg text-on-primary-fixed font-bold px-6 py-2.5 rounded-full hover:scale-105 transform transition-all active:scale-95">Start Free Trial</button>
+</div>
+</div>
+</nav>
+<main class="relative min-h-screen pt-32 overflow-hidden">
+<!-- Ambient Background Effects -->
+<div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#8A2BE2]/10 blur-[120px] rounded-full pointer-events-none"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#FF1493]/5 blur-[120px] rounded-full pointer-events-none"></div>
+<section class="max-w-7xl mx-auto px-8 lg:flex items-center justify-between gap-12">
+<!-- Left Content Area -->
+<div class="lg:w-3/5 space-y-10 relative z-10">
+<div class="inline-flex items-center gap-2 px-4 py-2 bg-surface-container-low rounded-full border border-white/5">
+<div class="flex text-amber-400">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="text-sm font-label font-medium tracking-widest uppercase text-on-surface-variant">Trusted by 500+ Mumbai Businesses</span>
+</div>
+<div class="space-y-6">
+<h1 class="font-headline text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter leading-[0.9] signature-gradient-text">
+                        India's #1 QR Tool for Local Businesses
+                    </h1>
+<p class="text-xl md:text-2xl text-on-surface-variant max-w-2xl leading-relaxed">
+                        Trusted by 500+ Mumbai stores to dominate Google Reviews. Convert foot traffic into digital influence instantly.
+                    </p>
+</div>
+<div class="flex flex-col sm:flex-row items-center gap-6 pt-4">
+<button class="w-full sm:w-auto signature-gradient-bg text-on-primary-fixed font-bold text-lg px-10 py-5 rounded-full hover:scale-105 transform transition-all active:scale-95 shadow-lg shadow-purple-500/20">
+                        Start Free Trial
+                    </button>
+<button class="w-full sm:w-auto bg-surface-container-highest border border-white/10 text-primary font-bold text-lg px-10 py-5 rounded-full hover:bg-surface-bright transition-all active:scale-95">
+                        See How It Works
+                    </button>
+</div>
+<!-- Trusted By Logos (Subtle) -->
+<div class="pt-12">
+<p class="text-xs font-label uppercase tracking-widest text-on-surface-variant mb-6">As featured in local markets</p>
+<div class="flex flex-wrap gap-8 opacity-40 grayscale hover:grayscale-0 transition-all">
+<div class="h-6 w-24 bg-on-surface-variant rounded-sm" data-alt="minimalist logo placeholder for a high-end Mumbai boutique store with clean geometric lines"></div>
+<div class="h-6 w-24 bg-on-surface-variant rounded-sm" data-alt="minimalist logo placeholder for a popular Bandra cafe with elegant serif typography"></div>
+<div class="h-6 w-24 bg-on-surface-variant rounded-sm" data-alt="minimalist logo placeholder for a modern Colaba gallery with bold architectural style"></div>
+</div>
+</div>
+</div>
+<!-- Right Visual Area (iPhone Mockup) -->
+<div class="lg:w-2/5 mt-20 lg:mt-0 flex justify-center lg:justify-end relative">
+<!-- Decorative Circle -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 signature-gradient-bg blur-[100px] opacity-20 rounded-full"></div>
+<div class="relative z-10 scale-90 md:scale-100 transform lg:translate-x-12">
+<!-- iPhone Frame -->
+<div class="w-[320px] h-[650px] bg-surface-container-lowest rounded-[3rem] p-3 border-[8px] border-surface-container-highest shadow-2xl relative overflow-hidden ambient-glow">
+<!-- Screen Content -->
+<div class="bg-surface h-full w-full rounded-[2.2rem] overflow-hidden flex flex-col">
+<!-- In-App Header -->
+<div class="px-6 pt-10 pb-4 flex justify-between items-center">
+<div>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest">Dashboard</p>
+<h3 class="font-headline font-bold text-white text-lg">Mumbai Hub</h3>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">notifications</span>
+</div>
+</div>
+<!-- Dashboard Stats -->
+<div class="px-4 py-2 space-y-3">
+<div class="glass-card p-4 rounded-2xl">
+<p class="text-[10px] text-on-surface-variant font-bold uppercase">Total Reviews</p>
+<div class="flex items-end gap-2 mt-1">
+<span class="text-3xl font-headline font-black text-white">1,284</span>
+<span class="text-emerald-400 text-[10px] mb-1 font-bold">+24%</span>
+</div>
+<div class="w-full h-1 bg-surface-container-highest rounded-full mt-3 overflow-hidden">
+<div class="h-full signature-gradient-bg w-3/4"></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div class="glass-card p-4 rounded-2xl">
+<span class="material-symbols-outlined text-primary text-xl">qr_code_2</span>
+<p class="text-[10px] text-on-surface-variant font-bold uppercase mt-2">Scans</p>
+<p class="text-xl font-headline font-black text-white">4.2k</p>
+</div>
+<div class="glass-card p-4 rounded-2xl">
+<span class="material-symbols-outlined text-secondary text-xl">star_rate</span>
+<p class="text-[10px] text-on-surface-variant font-bold uppercase mt-2">Rating</p>
+<p class="text-xl font-headline font-black text-white">4.9</p>
+</div>
+</div>
+<!-- Live Feed Preview -->
+<div class="pt-4">
+<p class="text-[10px] text-on-surface-variant font-bold uppercase mb-3">Live Feed</p>
+<div class="space-y-2">
+<div class="bg-surface-container-low p-3 rounded-xl flex gap-3 border border-white/5">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-highest flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="headshot of a young professional man with a friendly expression in natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5XZwaqPZF4aFx0SaWuj2HOVNLjtqjz6VZAwGaaoQY2onSOmHW2pwxWjeTAujtCBpn3wHpPKQRjEDnfC9uWueyTJERJiSwsXIS4G0ER_t_nV8DJm0EhRBSPUHmJS42RMQ6DKroY3_4UmQUMMwdQi_6sjA8fhfNw22JPiiWAd1EHz0Yq8rbJSDD0eJv1fmGtb5spSJElHdt9NjaBScMoekwxwKsJpOJhrZTxipzuZZGJXoUjPV2sbRAL4hCBoPjusPiBe0BfcaTS0ay"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center">
+<p class="text-[10px] font-bold text-white">Rahul S.</p>
+<span class="text-[8px] text-on-surface-variant">2m ago</span>
+</div>
+<p class="text-[10px] text-on-surface-variant line-clamp-1">Amazing experience at the store...</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-3 rounded-xl flex gap-3 border border-white/5 opacity-60">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-highest flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="portrait of a young smiling woman with long dark hair against a soft blurred background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQtA2akWmdyNe7v33wnUNbqUh_wDsbR4h9cMQ0171FL4J1T12bcERC6ZENFw50CJ28v_o_fanUeDkIBn9oeAifDfWn8sH0X9SFfJE83qY_5QHG83mENrMaUTtF5J8XvnBrH2hhWAQmSAojYq7jlyPkqL-rsiPRk2wYU3gaDSQik3Dc5Xfla-p5EVuF0lKUTtBMrCyhyMACk3h03Ci04GmYk7WBBAdxvXoWmDtWT1MFTuQla_EFIJnGqwGoyd-ZfzluFnto8JTe70-O"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center">
+<p class="text-[10px] font-bold text-white">Priya K.</p>
+<span class="text-[8px] text-on-surface-variant">15m ago</span>
+</div>
+<p class="text-[10px] text-on-surface-variant line-clamp-1">The best coffee in Mumbai!</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Custom QR Code Visual -->
+<div class="mt-auto p-4 mb-8">
+<div class="surface-container-lowest rounded-3xl p-6 flex flex-col items-center justify-center border border-white/5 shadow-inner">
+<div class="w-32 h-32 relative">
+<img class="w-full h-full" data-alt="a stylized glowing purple QR code with smooth rounded edges on a deep black background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBELOHjKKprkpFX6mT2cfoHR8rhXwfsGxKbPlCk2BdX0RQR6aCd0HO5L7F9QJ3aT_6lz6cJStzjj-KjtxMa0uSG89SrrIhjqnexpjXoxUjVaD7N1mGDwfZNmL0sXkJLr_TtTg4tWOxdd1BGJQ0mKFxaZ822JMLTHp47uqoSSKXRB-ZGmmYKMiKbtdkv3GGtfFW4NwHHfgYqxNCgwrxOOFZd2xgKjFlwNfP7Phdk68n7qEuRoDquZ1LR6mgLgu_eQeDl0huK3tSTUu7v"/>
+<div class="absolute inset-0 bg-gradient-to-tr from-[#8A2BE2]/20 to-[#FF1493]/20 pointer-events-none"></div>
+</div>
+<p class="mt-4 text-[10px] font-label font-bold tracking-widest text-primary">SCAN TO REVIEW</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Elements -->
+<div class="absolute -top-10 -right-20 glass-card p-4 rounded-2xl ambient-glow hidden xl:block">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-emerald-400">trending_up</span>
+</div>
+<div>
+<p class="text-xs font-bold text-white">+500% ROI</p>
+<p class="text-[10px] text-on-surface-variant">Organic Growth</p>
+</div>
+</div>
+</div>
+<div class="absolute bottom-20 -left-20 glass-card p-4 rounded-2xl ambient-glow hidden xl:block">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-violet-500/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-violet-400">bolt</span>
+</div>
+<div>
+<p class="text-xs font-bold text-white">Instant Gen</p>
+<p class="text-[10px] text-on-surface-variant">AI-Powered Tech</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer Tonal Transition -->
+<section class="mt-32 w-full bg-surface-container-low py-12 px-8">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 opacity-60 hover:opacity-100 transition-opacity">
+<div class="text-sm font-label uppercase tracking-[0.2em] text-on-surface-variant">Used by the elite:</div>
+<div class="flex flex-wrap justify-center gap-12 grayscale">
+<span class="font-headline font-black text-xl">RETAIL CO.</span>
+<span class="font-headline font-black text-xl">DINE LUXE</span>
+<span class="font-headline font-black text-xl">CHAI HUB</span>
+<span class="font-headline font-black text-xl">MUMBAI ARTS</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Side Navigation Menu (For Mobile PWA feel) -->
+<div class="hidden">
+<div class="fixed inset-0 z-[60] bg-[#0e0e0e]/95 backdrop-blur-2xl flex flex-col p-6 w-full h-full font-headline">
+<div class="flex justify-between items-center mb-12">
+<div class="text-xl font-black text-white uppercase">MAGIC QR</div>
+<button class="material-symbols-outlined text-white">close</button>
+</div>
+<div class="space-y-6">
+<a class="bg-gradient-to-r from-[#8A2BE2] to-[#FF1493] text-white rounded-xl p-4 flex items-center gap-4" href="#">
+<span class="material-symbols-outlined">bolt</span> Features
+                </a>
+<a class="text-white/70 hover:text-white p-4 flex items-center gap-4" href="#">
+<span class="material-symbols-outlined">auto_fix</span> How it Works
+                </a>
+<a class="text-white/70 hover:text-white p-4 flex items-center gap-4" href="#">
+<span class="material-symbols-outlined">payments</span> Pricing
+                </a>
+<a class="text-white/70 hover:text-white p-4 flex items-center gap-4" href="#">
+<span class="material-symbols-outlined">quiz</span> FAQ
+                </a>
+<a class="text-white/70 hover:text-white p-4 flex items-center gap-4" href="#">
+<span class="material-symbols-outlined">rocket_launch</span> Start Free Trial
+                </a>
+</div>
+</div>
+</div>
+</body></html>
