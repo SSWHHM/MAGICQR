@@ -41,10 +41,10 @@ export default function Navbar() {
                     className="flex items-center gap-2 cursor-pointer group" 
                     onClick={() => navigate('/')}
                 >
-                    <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center font-black text-white text-xl shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
+                    <div className="w-10 h-10 bg-linear-to-br from-primary to-secondary rounded-xl flex items-center justify-center font-black text-white text-xl shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
                         {logo[0]}
                     </div>
-                    <span className="text-xl font-black bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
+                    <span className="text-xl font-black bg-linear-to-r from-white to-white/60 bg-clip-text text-transparent">
                         {logo}
                     </span>
                 </div>
@@ -74,7 +74,7 @@ export default function Navbar() {
                     </button>
                     <button 
                         onClick={() => navigate('/signup')}
-                        className="px-6 py-3 bg-gradient-to-r from-primary to-secondary hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] text-white font-bold rounded-xl transition-all active:scale-95 text-sm"
+                        className="px-6 py-3 bg-linear-to-r from-primary to-secondary hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] text-white font-bold rounded-xl transition-all active:scale-95 text-sm"
                     >
                         {cta.trial}
                     </button>
@@ -123,7 +123,7 @@ export default function Navbar() {
                             </button>
                             <button 
                                 onClick={() => navigate('/signup')}
-                                className="w-full py-4 rounded-2xl bg-gradient-to-r from-primary to-secondary font-bold text-xl text-white shadow-xl shadow-primary/20"
+                                className="w-full py-4 rounded-2xl bg-linear-to-r from-primary to-secondary font-bold text-xl text-white shadow-xl shadow-primary/20"
                             >
                                 {cta.trial}
                             </button>
