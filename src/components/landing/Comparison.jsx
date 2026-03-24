@@ -29,7 +29,7 @@ export default function Comparison() {
 
             <div className="grid md:grid-cols-2 gap-8 relative">
                 {/* VS Badge */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-bg border border-border rounded-full flex items-center justify-center font-black text-xl z-10 hidden md:flex text-text-muted">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-bg border border-border rounded-full hidden md:flex items-center justify-center font-black text-xl z-10 text-text-muted">
                     VS
                 </div>
 
