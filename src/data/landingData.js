@@ -3,165 +3,129 @@ export const landingData = {
         logo: "MAGIC QR",
         links: [
             { name: "Features", href: "#features" },
+            { name: "Comparison", href: "#comparison" },
             { name: "How it Works", href: "#how-it-works" },
-            { name: "Pricing", href: "#pricing" },
-            { name: "FAQ", href: "#faq" }
+            { name: "Pricing", href: "#pricing" }
         ],
         cta: {
             login: "Login",
-            trial: "Start Free Trial"
+            trial: "Start Free Trial →"
         }
     },
     hero: {
-        badge: "Trusted by 500+ Mumbai Businesses",
-        headline: "Instant 5★ Google Reviews via QR Scan",
-        subheadline: "Print QR once. Customers scan. You rank higher on Google. No tech skills needed. Works from Day 1.",
-        primaryCTA: "Start Free Trial",
+        badge: "Verified by Google | Setup in 2 mins",
+        headline: "Print once.\nCustomers scan.\nYou rank #1 on Google. 🏆",
+        subheadline: "India's most trusted QR review tool. Used by 500+ Mumbai businesses to automate reputation and dominate search rankings.",
+        primaryCTA: "Start Free Trial →",
         secondaryCTA: "See How It Works",
-        stats: [
-            { label: "Total Reviews", value: "4.2k" },
-            { label: "Rating", value: "4.9" },
-            { label: "ROI", value: "+500%" }
-        ]
-    },
-    trustStrip: {
-        items: [
-            "500+ businesses",
-            "Mumbai · Pune · Delhi",
+        trustBadges: [
+            "Verified by Google",
             "Setup in 2 mins",
             "No credit card",
-            "Avg +47 reviews/month"
+            "4.9 avg rating"
+        ],
+        stats: [
+            { label: "Reviews Generated", value: "4,200+" },
+            { label: "Client ROI", value: "+500%" },
+            { label: "Avg Rating", value: "4.9★" }
         ]
     },
+    statsBar: {
+        stats: [
+            { label: "Reviews Generated", value: "4,200+" },
+            { label: "Average Rating", value: "4.9★" },
+            { label: "Client ROI", value: "+500%" }
+        ],
+        ticker: "⭐ +47 new reviews added this week"
+    },
+    comparison: {
+        title: "Other review tools are killing your Google ranking 🧪",
+        subtitle: "Not us.",
+        otherApps: {
+            title: "Other Apps",
+            warnings: [
+                "Fake bot reviews (Risk of suspension)",
+                "Clunky QR design that customers ignore",
+                "Hidden monthly fees & upsells",
+                "Zero analytics or tracking",
+                "Slow, offshore support"
+            ]
+        },
+        magicQR: {
+            title: "MagicQR",
+            advantages: [
+                "100% Real, Verified Google Reviews",
+                "High-conversion premium design",
+                "Transparent fixed pricing",
+                "Full enterprise dashboard",
+                "24/7 dedicated support in Mumbai"
+            ]
+        }
+    },
     howItWorks: {
-        title: "The Alchemical Process",
-        subtitle: "Three steps to transform your physical traffic into digital influence.",
+        title: "Reputation automation, simplified.",
+        subtitle: "Go from invisible to invincible in three simple steps.",
         steps: [
-            {
-                id: "01",
-                title: "Generate QR",
-                desc: "Create your custom-branded, artistic QR code in seconds using our AI engine.",
-                icon: "Zap"
-            },
-            {
-                id: "02",
-                title: "Place It Anywhere",
-                desc: "Print it on menus, table tents, or window decals. Durable and high-contrast designs.",
-                icon: "MapPin"
-            },
-            {
-                id: "03",
-                title: "Collect Reviews Daily",
-                desc: "Watch your Google review count soar as customers scan and share their experience.",
-                icon: "Star"
-            }
+            { id: "1", icon: "QrCode", title: "Generate", desc: "We generate your custom enterprise QR code in 30 seconds." },
+            { id: "2", icon: "Printer", title: "Print & Place", desc: "Print it and place it at your counter, menu, or table." },
+            { id: "3", icon: "TrendingUp", title: "Rank #1", desc: "Customers scan → leave 5★ reviews instantly → you dominate Google." }
         ]
     },
     features: {
-        title: "Transmute Data into Digital Gold",
-        subtitle: "Experience the fusion of high-end aesthetics and tactical utility.",
+        title: "Everything you need to dominate local search.",
         grid: [
-            {
-                title: "QR Generator",
-                desc: "Create custom-branded, artistic QR codes that bridge physical and digital.",
-                icon: "QrCode"
-            },
-            {
-                title: "Targeted Reviews",
-                desc: "Intelligently funnel positive experiences where they matter most.",
-                icon: "Target"
-            },
-            {
-                title: "Google Ranking Boost",
-                desc: "Improve local SEO with consistent review volume and verified social proof.",
-                icon: "TrendingUp"
-            },
-            {
-                title: "Smart Dashboard",
-                desc: "Real-time analytics and management with microscopic precision.",
-                icon: "LayoutDashboard"
-            },
-            {
-                title: "WhatsApp Share",
-                desc: "Turn every interaction into a potential conversion with frictionless connectivity.",
-                icon: "MessageCircle"
-            }
+            { icon: "QrCode", title: "QR Generation", desc: "Custom-branded, high-conversion QR codes." },
+            { icon: "Target", title: "Google Integration", desc: "Direct deep-linking to your Google Review page." },
+            { icon: "LayoutDashboard", title: "Analytics", desc: "Track scans, reviews, and conversion rates in real-time." },
+            { icon: "MapPin", title: "Multi-location", desc: "Manage 1 or 1,000 locations from a single dashboard." },
+            { icon: "MessageCircle", title: "WhatsApp Nudges", desc: "Follow up with customers automatically via WhatsApp." },
+            { icon: "Shield", title: "Review Monitoring", desc: "Get alerted instantly when you receive a new review." }
+        ]
+    },
+    testimonials: {
+        title: "So easy, even your chai wala gets 5 stars ☕",
+        items: [
+            { rating: 5, text: "MagicQR doubled our monthly reviews in just three weeks. Unmatched quality.", author: "Rajesh K.", biz: "The Mumbai Grill" },
+            { rating: 5, text: "The best investment we've made for our cafe. The ranking boost is real.", author: "Anita P.", biz: "Bandra Brews" },
+            { rating: 5, text: "Simple, powerful, and effective. The enterprise features are a game changer.", author: "Vikram S.", biz: "Pune Palace" }
         ]
     },
     pricing: {
-        title: "Choose Your Alchemy",
+        title: "Transparent pricing for growing empires.",
         tiers: [
-            {
-                name: "Starter",
-                price: "₹499",
-                period: "mo",
-                features: ["10 Magic QR Codes", "Basic Neon Templates", "720p Resolution Exports"]
+            { 
+                name: "Starter", 
+                price: "₹499", 
+                features: ["1 location", "50 scans", "Basic QR design", "Standard support"],
+                popular: false 
             },
-            {
-                name: "Growth",
-                price: "₹1,999",
-                period: "mo",
-                popular: true,
-                features: ["100 Magic QR Codes", "Custom Branding & Logos", "Advanced Analytics", "4K Vector Exports"]
+            { 
+                name: "Growth", 
+                price: "₹1,999", 
+                features: ["Unlimited locations", "Unlimited scans", "SEO review boost", "Full analytics", "Priority support"],
+                popular: true 
             },
-            {
-                name: "Pro",
-                price: "₹4,999",
-                period: "mo",
-                features: ["Unlimited QR Generations", "API Access & Webhooks", "Dedicated Account Alchemist"]
+            { 
+                name: "Pro", 
+                price: "₹4,999", 
+                features: ["White-label QR", "Agency tools (5 clients)", "API Access", "24/7 VIP support", "Custom branding"],
+                popular: false 
             }
         ]
     },
     faq: {
-        title: "Curious Minds, Crystal Clear Answers",
-        subtitle: "Everything you need to know about the intersection of Art, AI, and accessibility.",
+        title: "Questions? We have answers.",
         items: [
-            {
-                q: "Is there a risk of being banned by Google?",
-                a: "No, our AI-generated codes are fully compliant with Google's scanning standards and only enhance your profile's visibility."
-            },
-            {
-                q: "What are the scan rates?",
-                a: "Clients typically see a 40-70% increase in scan rates compared to traditional black-and-white QR codes."
-            },
-            {
-                q: "How does the free trial work?",
-                a: "Start with 14 days of premium access, no credit card required. Experience the full toolkit immediately."
-            },
-            {
-                q: "Can I manage multiple locations?",
-                a: "Yes, our Pro plan includes a centralized dashboard for managing multiple locations and dynamic routing."
-            },
-            {
-                q: "Is the QR permanent?",
-                a: "Yes, once generated, the QR code is yours forever. You can also update the destination URL at any time."
-            },
-            {
-                q: "Do I need tech skills?",
-                a: "Not at all. Our AI Alchemy engine handles the complexity. If you can upload a logo, you can create a masterpiece."
-            }
+            { q: "Is it really setup in 2 mins?", a: "Yes. Just link your Google Business profile and your QR is ready." },
+            { q: "Do these reviews count as 'real'?", a: "100%. These are authentic reviews left by your actual customers." },
+            { q: "Can I manage multiple locations?", a: "Absolutely. Our Growth and Pro plans are built for scale." }
         ]
     },
     footer: {
-        banner: {
-            headline: "Ready to own your city on Google?",
-            subtext: "No credit card required. 7-day free trial.",
-            cta: "Get Started Free"
-        },
         columns: [
-            {
-                title: "Product",
-                links: ["Features", "Showcase", "Pricing", "API"]
-            },
-            {
-                title: "Company",
-                links: ["About Us", "Blog", "Careers"]
-            },
-            {
-                title: "Legal",
-                links: ["Privacy Policy", "Terms", "Support", "Contact Us"]
-            }
+            { title: "Product", links: ["Features", "Pricing", "Enterprise"] },
+            { title: "Support", links: ["Documentation", "Contact", "Status"] }
         ],
-        copyright: "© 2026 MAGIC QR · Harry Singh IT Services. Made with ❤️ in Mumbai 🇮🇳"
+        copyright: "© 2026 MagicQR · Harry Singh IT Services. Made with ❤️ in Mumbai 🇮🇳"
     }
 };
